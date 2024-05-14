@@ -1,0 +1,93 @@
+
+.dropzone {
+    background: white;
+    border-radius: 5px;
+    border: 2px dashed rgb(0, 135, 247);
+    border-image: none;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.dropzone .dz-preview .dz-image {
+    width: 100% !important;
+    overflow: visible;
+}
+#image-container1{
+    /* margin:20px; */
+    height:100%;
+    width:100%;
+    border: none;
+}
+.img-hldr{
+    margin:20px;
+
+    background-color:#eee;
+    border:1px dashed #000;
+    height:200px;
+    width:400px;
+    cursor: pointer;
+}
+#upload-btn{
+    position: absolute;
+    bottom: 0;
+    left: 40%;
+}
+.custom-img-hanlder .img-hldr{
+  width: 400px;
+  height: 250px;
+  position: relative;
+}
+.custom-img-hanlder img{
+  margin: 0;
+  object-fit: cover;
+}
+.custom-img-hanlder .row-custom{
+  width: 400px;
+  height: 250px;
+}
+.custom-img-hanlder #cancel-btn, #cancel-btn12{
+  position: absolute;
+  z-index:9;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* star rating css */
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+  }
+  
+  .rating > input{ display:none;}
+  
+  .rating > label {
+    position: relative;
+      width: 1em;
+      font-size: 2vw;
+      color: #FFD600;
+      cursor: pointer;
+  }
+  .rating > label::before{ 
+    content: "\2605";
+    position: absolute;
+    opacity: 0;
+  }
+  .rating > label:hover:before,
+  .rating > label:hover ~ label:before {
+    opacity: 1 !important;
+  }
+  
+  .rating > input:checked ~ label:before{
+    opacity:1;
+  }
+  
+  .rating:hover > input:checked ~ label:before{ opacity: 0.4; }
+
+  .main-sidebar {
+    overflow: hidden !important;
+}
+td{
+  min-width: 80px;
+}
