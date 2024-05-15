@@ -8,10 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
   
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
   
     // protected $guard_name = 'api';
     /**
@@ -25,6 +26,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'address',
+        'contact',
+        'city',
+        'state',
+        'country',
         'license_key',
         'is_approved',
         'is_online',

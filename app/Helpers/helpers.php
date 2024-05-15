@@ -38,6 +38,16 @@ if (!function_exists('generateLicenseKey')) {
 
         return $prefix . $randomString;
     }
+    function generateKey(): string
+    {
+        // Generate 16 bytes of random data (128 bits)
+        $randomBytes = random_bytes(16);
+        
+        // Convert the random bytes to a hexadecimal string
+        $licenseKey = bin2hex($randomBytes);
+
+        return $licenseKey;
+    }
 }
 
 ?>
