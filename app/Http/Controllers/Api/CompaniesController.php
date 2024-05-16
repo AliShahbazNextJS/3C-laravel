@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SongResource;
+use App\Http\Resources\CompaniesResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Packages;
+use App\Models\Companies;
+use Illuminate\Support\Facades\Response;
 
 class CompaniesController extends Controller
 {
@@ -14,13 +15,15 @@ class CompaniesController extends Controller
     {
         $perPage = request('per_page', 10);
         if($searchStr){
-            $this->data = Packages::whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($searchStr) . '%'])
+            $data = Companies::with('user')->whereRaw('LOWER(legal_name) LIKE ?', ['%' . strtolower($searchStr) . '%'])
             ->orderBy('id', 'desc')
             ->paginate($perPage);
         }else{
-            $this->data = Packages::orderBy('id', 'desc')->paginate($perPage);
+            $data = Companies::with('user')->orderBy('id', 'desc')->paginate($perPage);
         }
-        if($this->data){
+            $this->data = CompaniesResource::collection($data);
+            if($this->data){
+            
             $this->responsee(true);
         }
         else{
@@ -31,18 +34,31 @@ class CompaniesController extends Controller
     
     function store(Request $request)
     {
+        $request->merge(['license_key' => generateKey()]);
         $validator = Validator::make($request->all(), [
-            'title' => 'required|max:255',
-            'price' => 'required|max:255',
-            'duration' => 'required|numeric',
-            'short_description' => 'required',
-            'long_description' => 'required',
+            'legal_name'                    => 'required|max:225|string',
+            'email'                         => 'required|email|unique:companies,email|max:255',
+            'user_id'                       => 'required|integer',
+            'contact'                       => 'required|string|unique:companies,contact|max:255',
+            'head_office_address'           => 'required|string|max:255',
+            'city'                          => 'required|string|max:255',
+            'state'                         => 'required|string|max:255',
+            'country'                       => 'required|string|max:255',
+            'contact_person'                => 'required|string|max:255',
+            'contact_person_designation'    => 'required|string|max:255',
+            'contact_person_phone'          => 'required|string|max:20',
+            'contact_person_email'          => 'required|email|max:255',
+            'website'                       => 'nullable|url|max:255',
+            'industry'                      => 'required|string|max:255',
+            'status'                        => 'required|in:active,inactive',
+            'founded_date'                  => 'nullable|date',
+            'number_of_employees'           => 'nullable|integer',
         ]);
 
         if ($validator->fails())
             $this->responsee(false, $validator->errors());
         else{
-            $this->data = Packages::create($request->all());
+            $this->data = Companies::create($request->all());
             if($this->data){
                 $this->responsee(true);
             }
@@ -55,7 +71,7 @@ class CompaniesController extends Controller
     public function edit($id)
     {
         if($id){
-            $this->data = Packages::find($id);
+            $this->data = Companies::find($id);
             if($this->data)
                 $this->responsee(true);
             else
@@ -66,20 +82,31 @@ class CompaniesController extends Controller
     }
     public function update(Request $request, $id)
     {
-        $input = $request->all();
-        
+        // $input = $request->all();
         $validator = Validator::make($request->all(), [
-            'title' => 'required|max:255',
-            'price' => 'required|max:255',
-            'duration' => 'required|numeric',
-            'short_description' => 'required',
-            'long_description' => 'required',
+            'legal_name'                    => 'required|max:225|string',
+            'email'                         => 'required|email|max:255|unique:companies,email,'.$id,
+            'contact'                       => 'required|string|max:255|unique:companies,contact,'.$id,
+            'user_id'                       => 'required|integer',
+            'head_office_address'           => 'required|string|max:255',
+            'city'                          => 'required|string|max:255',
+            'state'                         => 'required|string|max:255',
+            'country'                       => 'required|string|max:255',
+            'contact_person'                => 'required|string|max:255',
+            'contact_person_designation'    => 'required|string|max:255',
+            'contact_person_phone'          => 'required|string|max:20',
+            'contact_person_email'          => 'required|email|max:255',
+            'website'                       => 'nullable|url|max:255',
+            'industry'                      => 'required|string|max:255',
+            'status'                        => 'required|in:active,inactive',
+            'founded_date'                  => 'nullable|date',
+            'number_of_employees'           => 'nullable|integer',
         ]);
 
         if ($validator->fails())
             $this->responsee(false,$validator->errors());
         else{
-            $this->data = Packages::find($id);
+            $this->data = Companies::find($id);
             if($this->data){
                 if($this->data->update($request->all()))
                     $this->responsee(true);
@@ -93,7 +120,7 @@ class CompaniesController extends Controller
     public function delete($id)
     {
         if($id){
-            $this->data = Packages::find($id);
+            $this->data = Companies::find($id);
             if($this->data){
                 if($this->data->delete()){
                     $this->responsee(true);

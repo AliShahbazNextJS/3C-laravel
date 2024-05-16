@@ -94,9 +94,9 @@ class User extends Authenticatable
 
     public $approved;
 
-    public function songs()
+    public function companies()
     {
-        return $this->hasMany(App\Models\Song::class);
+        return $this->hasMany(Company::class, 'id');
     }
     public function playlists()
     {

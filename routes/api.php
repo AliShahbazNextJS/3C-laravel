@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CompaniesController;
 use App\Http\Controllers\Api\PackagesController;
 use App\Http\Controllers\Api\UsersController;
 use Illuminate\Http\Request;
@@ -47,10 +48,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     // Company
     Route::prefix('companies')->group(function () {
-        Route::get('/{searchStr?}', [PackagesController::class, 'index'])->name('packages.all');
-        Route::post('add', [PackagesController::class, 'store'])->name('packages.add');
-        Route::get('{id}/edit', [PackagesController::class, 'edit'])->name('packages.edit');
-        Route::post('{id}/update', [PackagesController::class, 'update'])->name('packages.update');
-        Route::delete('{id}/delete', [PackagesController::class, 'delete'])->name('packages.delete');
+        Route::get('/{searchStr?}', [CompaniesController::class, 'index'])->name('company.all');
+        Route::post('add', [CompaniesController::class, 'store'])->name('company.add');
+        Route::get('{id}/edit', [CompaniesController::class, 'edit'])->name('company.edit');
+        Route::post('{id}/update', [CompaniesController::class, 'update'])->name('company.update');
+        Route::delete('{id}/delete', [CompaniesController::class, 'delete'])->name('company.delete');
     });
 });

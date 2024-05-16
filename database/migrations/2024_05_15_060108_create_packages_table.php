@@ -18,7 +18,7 @@ return new class extends Migration
             $table->longText('long_description')->nullable();
             $table->integer('duration')->comment('Duration of the package in months');
             $table->decimal('price', 8, 2);
-            $table->enum('status', ['active', 'inactive']);
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->softDeletes();
             $table->timestamps();
         });
