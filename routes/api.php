@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CompaniesController;
-use App\Http\Controllers\Api\PackagesController;
+use App\Http\Controllers\Api\ModulesController;
 use App\Http\Controllers\Api\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -38,13 +38,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('{id}/update', [UsersController::class, 'update'])->name('users.update');
         Route::delete('{id}/delete', [UsersController::class, 'delete'])->name('users.delete');
     });
-    // Packages
-    Route::prefix('packages')->group(function () {
-        Route::get('/{searchStr?}', [PackagesController::class, 'index'])->name('packages.all');
-        Route::post('add', [PackagesController::class, 'store'])->name('packages.add');
-        Route::get('{id}/edit', [PackagesController::class, 'edit'])->name('packages.edit');
-        Route::post('{id}/update', [PackagesController::class, 'update'])->name('packages.update');
-        Route::delete('{id}/delete', [PackagesController::class, 'delete'])->name('packages.delete');
+    // Modules
+    Route::prefix('modules')->group(function () {
+        Route::get('/{searchStr?}', [ModulesController::class, 'index'])->name('modules.all');
+        Route::post('add', [ModulesController::class, 'store'])->name('modules.add');
+        Route::get('{id}/edit', [ModulesController::class, 'edit'])->name('modules.edit');
+        Route::post('{id}/update', [ModulesController::class, 'update'])->name('modules.update');
+        Route::delete('{id}/delete', [ModulesController::class, 'delete'])->name('modules.delete');
     });
     // Company
     Route::prefix('companies')->group(function () {

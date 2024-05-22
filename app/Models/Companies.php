@@ -30,10 +30,18 @@ class Companies extends Model
         'status',
         'founded_date',
         'number_of_employees',    
+        'is_trial',    
+        'active_users',    
+        'start_date',    
+        'expiry_date',    
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'id');
+    }
+    public function modules()
+    {
+        return $this->belongsToMany(Module::class, 'company_module');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AppSettingsModel;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 function json_response($response = array(), $code = 201)
 {
@@ -47,6 +48,43 @@ if (!function_exists('generateLicenseKey')) {
         $licenseKey = bin2hex($randomBytes);
 
         return $licenseKey;
+    }
+
+    // Function to create a JWT containing the encrypted data
+    function createLicenseKey($request)
+    {
+        $customClaims = [
+            'data' => [
+                'legal_name'=>$request->legal_name,
+                'email'=>$request->email,
+                'user_id'=>$request->user_id,
+                'contact'=>$request->contact,
+                'head_office_address'=>$request->head_office_address,
+                'city'=>$request->city,
+                'state'=>$request->state,
+                'country'=>$request->country,
+                'active_users'=>$request->active_users,
+                'is_trial'=>$request->is_trial,
+                'start_date'=>$request->starting_date,
+                'expairy_date'=>$request->expiry_date,
+            ],
+            'sub' => $request->email,
+        ];
+        $payload = JWTFactory::customClaims($customClaims)->make();
+
+        $keyBytes = base64_encode(env('JWT_SECRET'));
+
+        $token = JWTAuth::encode($payload, $keyBytes, 'HS256');
+        return $token;
+    }
+
+    // Function to decrypt the JWT to retrieve data
+    function decryptLicenseKey($token)
+    {
+        // Decode the token to get the payload data
+        $data = JWTAuth::setToken($token)->getPayload();
+
+        return $data;
     }
 }
 

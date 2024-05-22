@@ -16,6 +16,7 @@
         "spatie/laravel-medialibrary": "^10.15",
         "spatie/laravel-permission": "^6.1",
         "symfony/dom-crawler": "^7.0",
+        "tymon/jwt-auth": "^2.1",
         "yajra/laravel-datatables-oracle": "^10.11"
     },
     "require-dev": {

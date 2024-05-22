@@ -21,8 +21,19 @@ class CompaniesController extends Controller
         }else{
             $data = Companies::with('user')->orderBy('id', 'desc')->paginate($perPage);
         }
-            $this->data = CompaniesResource::collection($data);
-            if($this->data){
+        $this->data = CompaniesResource::collection($data);
+        if($this->data){
+            $this->data = [
+                'data' => $this->data,
+                'pagination' => [
+                    'total' => $data->total(),
+                    'per_page' => $data->perPage(),
+                    'current_page' => $data->currentPage(),
+                    'last_page' => $data->lastPage(),
+                    'from' => $data->firstItem(),
+                    'to' => $data->lastItem(),
+                ],
+            ];  
             
             $this->responsee(true);
         }
@@ -34,7 +45,7 @@ class CompaniesController extends Controller
     
     function store(Request $request)
     {
-        $request->merge(['license_key' => generateKey()]);
+        // $request->merge(['license_key' => generateKey()]);
         $validator = Validator::make($request->all(), [
             'legal_name'                    => 'required|max:225|string',
             'email'                         => 'required|email|unique:companies,email|max:255',
@@ -53,11 +64,20 @@ class CompaniesController extends Controller
             'status'                        => 'required|in:active,inactive',
             'founded_date'                  => 'nullable|date',
             'number_of_employees'           => 'nullable|integer',
+            'active_users'                  => 'nullable|integer',
+            'is_trial'                      => 'nullable|boolean',
+            'start_date'                    => 'nullable|date',
+            'expiry_date'                   => 'nullable|date',
         ]);
 
         if ($validator->fails())
             $this->responsee(false, $validator->errors());
         else{
+            $license_key = createLicenseKey($request);
+            // $payload = decryptLicenseKey($license_key)->toArray();
+            
+            // print_r($payload['data']['legal_name']); die;
+            $request->merge(['license_key' => $license_key]);
             $this->data = Companies::create($request->all());
             if($this->data){
                 $this->responsee(true);

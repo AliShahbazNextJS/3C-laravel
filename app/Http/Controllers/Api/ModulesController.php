@@ -3,24 +3,36 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SongResource;
+use App\Http\Resources\ModulesResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Packages;
+use App\Models\Modules;
 
-class PackagesController extends Controller
+class ModulesController extends Controller
 {
     function index($searchStr=null)
     {
         $perPage = request('per_page', 10);
         if($searchStr){
-            $this->data = Packages::whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($searchStr) . '%'])
+            $data = Modules::whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($searchStr) . '%'])
             ->orderBy('id', 'desc')
             ->paginate($perPage);
         }else{
-            $this->data = Packages::orderBy('id', 'desc')->paginate($perPage);
+            $data = Modules::orderBy('id', 'desc')->paginate($perPage);
         }
+        $this->data = ModulesResource::collection($data);
         if($this->data){
+            $this->data = [
+                'data' => $this->data,
+                'pagination' => [
+                    'total' => $data->total(),
+                    'per_page' => $data->perPage(),
+                    'current_page' => $data->currentPage(),
+                    'last_page' => $data->lastPage(),
+                    'from' => $data->firstItem(),
+                    'to' => $data->lastItem(),
+                ],
+            ];
             $this->responsee(true);
         }
         else{
@@ -33,16 +45,13 @@ class PackagesController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:255',
-            'price' => 'required|max:255',
-            'duration' => 'required|numeric',
-            'short_description' => 'required',
-            'long_description' => 'required',
+            'description' => 'required',
         ]);
 
         if ($validator->fails())
             $this->responsee(false, $validator->errors());
         else{
-            $this->data = Packages::create($request->all());
+            $this->data = Modules::create($request->all());
             if($this->data){
                 $this->responsee(true);
             }
@@ -55,7 +64,7 @@ class PackagesController extends Controller
     public function edit($id)
     {
         if($id){
-            $this->data = Packages::find($id);
+            $this->data = Modules::find($id);
             if($this->data)
                 $this->responsee(true);
             else
@@ -70,16 +79,13 @@ class PackagesController extends Controller
         
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:255',
-            'price' => 'required|max:255',
-            'duration' => 'required|numeric',
-            'short_description' => 'required',
-            'long_description' => 'required',
+            'description' => 'required',
         ]);
 
         if ($validator->fails())
             $this->responsee(false,$validator->errors());
         else{
-            $this->data = Packages::find($id);
+            $this->data = Modules::find($id);
             if($this->data){
                 if($this->data->update($request->all()))
                     $this->responsee(true);
@@ -93,7 +99,7 @@ class PackagesController extends Controller
     public function delete($id)
     {
         if($id){
-            $this->data = Packages::find($id);
+            $this->data = Modules::find($id);
             if($this->data){
                 if($this->data->delete()){
                     $this->responsee(true);
